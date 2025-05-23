@@ -1,0 +1,294 @@
+/* Color Variables */
+:root {
+    --dark-cyan: hsl(180, 29%, 50%);
+    --very-dark-cyan: hsl(180, 14%, 20%);
+    --light-cyan-background: hsl(180, 52%, 96%);
+    --light-cyan-filter-tablets: hsl(180, 31%, 95%);
+    --dark-grayish-cyan: hsl(180, 8%, 52%);
+}
+
+/* Universal Styles & Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'League Spartan', sans-serif;
+    background-color: var(--light-cyan-background);
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+/* Header/Hero Section */
+.hero {
+    background-color: var(--dark-cyan);
+    background-image: url('./images/bg-header-desktop.svg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 150px;
+}
+
+/* Content Wrapper to push filter bar up */
+.content-wrapper {
+    width: 80%; /* Adjust width for desktop view */
+    max-width: 1100px; /* Max width to keep content readable */
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Space between job cards */
+    padding-bottom: 50px; /* Padding at the bottom of the container */
+    position: relative; /* For filter bar positioning */
+    margin-top: -75px; /* Pull content up to overlap hero */
+}
+
+/* Filter Bar Styling */
+.filter-bar-container {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 10px 20px rgba(0, 71, 71, 0.1);
+    padding: 20px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Allow filters to wrap */
+    min-height: 70px; /* Ensure some height even with few filters */
+    margin-bottom: 25px; /* Space between filter bar and first job card */
+    visibility: hidden; /* Hidden by default, shown by JS when filters are active */
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease-out;
+}
+
+.filter-bar-container.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-grow: 1; /* Allow filters to take space */
+}
+
+.filter-tag-item {
+    background-color: var(--light-cyan-filter-tablets);
+    color: var(--dark-cyan);
+    font-weight: 700;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    overflow: hidden; /* Ensures rounded corners on children */
+    font-size: 0.9em;
+}
+
+.filter-tag-item span {
+    padding: 8px 10px;
+}
+
+.filter-tag-item .remove-filter-btn {
+    background-color: var(--dark-cyan);
+    color: #fff;
+    border: none;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.2s ease;
+    display: flex; /* For centering the 'X' if needed */
+    align-items: center;
+    justify-content: center;
+    line-height: 1; /* To ensure 'X' is vertically centered */
+}
+
+.filter-tag-item .remove-filter-btn:hover {
+    background-color: var(--very-dark-cyan);
+}
+
+.clear-filters-btn {
+    background: none;
+    border: none;
+    color: var(--dark-grayish-cyan);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.9em;
+    padding: 5px 10px; /* Make it clickable area larger */
+    transition: color 0.2s ease;
+    margin-left: 15px; /* Space from filter tags */
+}
+
+.clear-filters-btn:hover {
+    color: var(--dark-cyan);
+}
+
+/* Individual Job Card Styling */
+.job-card {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 10px 20px rgba(0, 71, 71, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.job-card.featured {
+    border-left: 5px solid var(--dark-cyan);
+}
+
+.job-card img {
+    width: 88px;
+    height: 88px;
+    margin-right: 25px;
+    border-radius: 50%; /* Only if logos are circles */
+}
+
+.job-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.company-new-featured {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.company-new-featured .company-name {
+    color: var(--dark-cyan);
+    font-weight: 700;
+    margin-right: 15px;
+}
+
+.new-badge, .featured-badge {
+    background-color: var(--dark-cyan);
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: 700;
+    margin-right: 10px;
+    text-transform: uppercase;
+}
+
+.featured-badge {
+    background-color: var(--very-dark-cyan);
+}
+
+.position {
+    color: var(--very-dark-cyan);
+    font-weight: 700;
+    font-size: 1.25em;
+    margin-bottom: 8px;
+    transition: color 0.2s ease;
+}
+
+.position:hover {
+    color: var(--dark-cyan);
+    cursor: pointer;
+}
+
+.details {
+    display: flex;
+    color: var(--dark-grayish-cyan);
+    font-size: 0.9em;
+}
+
+.details span:not(:last-child)::after {
+    content: "•";
+    margin: 0 8px;
+}
+
+/* Filters/Tags Section on Job Card */
+.filters-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: auto;
+    justify-content: flex-end;
+}
+
+.filter-tag {
+    background-color: var(--light-cyan-filter-tablets);
+    color: var(--dark-cyan);
+    font-weight: 700;
+    padding: 8px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.filter-tag:hover {
+    background-color: var(--dark-cyan);
+    color: #fff;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .hero {
+        background-image: url('./images/bg-header-mobile.svg'); /* Mobile header image */
+    }
+
+    .content-wrapper {
+        width: 90%; /* More width on mobile */
+        padding-bottom: 30px;
+        margin-top: -40px; /* Adjust overlap for mobile header height */
+    }
+
+    .filter-bar-container {
+        flex-direction: row; /* Keep elements in a row for mobile filter bar */
+        align-items: flex-start; /* Align filters to the top if they wrap */
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .active-filters {
+        flex-basis: 100%; /* Filters take full width before clear button */
+        margin-bottom: 10px; /* Space between filter tags and clear button */
+    }
+
+    .clear-filters-btn {
+        margin-left: auto; /* Push clear to right */
+        align-self: flex-start; /* Align to top right */
+    }
+
+    .job-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 50px; /* Space for pushed-up logo */
+        position: relative;
+    }
+
+    .job-card img {
+        position: absolute;
+        top: -30px; /* Pushes logo up outside the card */
+        left: 25px;
+        width: 60px; /* Smaller logo on mobile */
+        height: 60px;
+        margin-right: 0; /* Remove margin */
+    }
+
+    .company-new-featured {
+        margin-top: 10px; /* Space after logo for mobile */
+    }
+
+    .job-info {
+        width: 100%;
+        padding-bottom: 20px; /* Space before horizontal rule */
+        border-bottom: 1px solid hsla(180, 8%, 52%, 0.3); /* Subtle separator */
+        margin-bottom: 20px;
+    }
+
+    .filters-container {
+        margin-left: 0; /* No auto margin */
+        justify-content: flex-start; /* Align tags to the left */
+        width: 100%; /* Take full width */
+    }
+}

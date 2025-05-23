@@ -1,15 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const jobListingsContainer = document.querySelector('.job-listings-container');
-    const filterBarContainer = document.querySelector('.filter-bar-container');
-    const activeFiltersDisplay = document.querySelector('.active-filters');
-    const clearFiltersBtn = document.querySelector('.clear-filters-btn');
+    const jobItemsWrapper = document.querySelector('.job-items-wrapper');
+    const criteriaSelectionPanel = document.querySelector('.criteria-selection-panel');
+    const currentSelections = document.querySelector('.current-selections');
+    const resetCriteriaButton = document.querySelector('.reset-criteria-button');
 
-    let allJobs = []; // This will now directly hold the hardcoded data
-    let activeFilters = new Set(); // Using a Set for better performance
+    let allJobs = []; 
+    let activeFilters = new Set(); 
 
-    // --- Hardcoded JSON data from your data.json ---
-    // This directly embeds the data, avoiding the 'fetch' operation and potential HTTP errors
-    // when running files directly from the file system.
     const initialJobData = [
         {
             "id": 1,
@@ -163,77 +160,70 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-    allJobs = initialJobData; // Assign the hardcoded data to allJobs
+    allJobs = initialJobData; 
     
-    // Initial filters as per "active-states.jpg"
-    // These calls will trigger the display of jobs as they add filters and call applyFilters()
     addFilter('Frontend');
     addFilter('CSS');
     addFilter('JavaScript');
 
-    // --- Function to create a single job card HTML ---
-    function createJobCard(job) {
-        const card = document.createElement('div');
-        card.classList.add('job-card');
+    function createListingBlock(job) {
+        const block = document.createElement('div');
+        block.classList.add('listing-block');
         if (job.featured) {
-            card.classList.add('featured');
+            block.classList.add('highlighted');
         }
 
         let badgesHTML = '';
         if (job.new) {
-            badgesHTML += '<span class="new-badge">NEW!</span>';
+            badgesHTML += '<span class="fresh-indicator">NEW!</span>';
         }
         if (job.featured) {
-            badgesHTML += '<span class="featured-badge">FEATUREED</span>';
+            badgesHTML += '<span class="premium-tag">FEATURED</span>';
         }
 
-        // Combine all relevant tags for the job into a single array
         const allTags = [job.role, job.level, ...job.languages, ...job.tools];
         let tagsHTML = '';
         allTags.forEach(tag => {
             if (tag) {
-                // Attach data-filter attribute to the tag for filtering
-                tagsHTML += `<span class="filter-tag" data-filter="${tag}">${tag}</span>`;
+                tagsHTML += `<span class="selection-tag" data-filter="${tag}">${tag}</span>`;
             }
         });
 
-        card.innerHTML = `
+        block.innerHTML = `
             <img src="${job.logo}" alt="${job.company} logo">
-            <div class="job-info">
-                <div class="company-new-featured">
-                    <span class="company-name">${job.company}</span>
+            <div class="listing-details">
+                <div class="org-status-section">
+                    <span class="org-title">${job.company}</span>
                     ${badgesHTML}
                 </div>
-                <h2 class="position">${job.position}</h2>
-                <div class="details">
+                <h2 class="role-designation">${job.position}</h2>
+                <div class="timing-location-info">
                     <span>${job.postedAt}</span>
                     <span>${job.contract}</span>
                     <span>${job.location}</span>
                 </div>
             </div>
-            <div class="filters-container">
+            <div class="skill-tags-group">
                 ${tagsHTML}
             </div>
         `;
-        return card;
+        return block;
     }
 
-    // --- Function to display jobs based on filters ---
-    function displayJobs(jobsToDisplay) {
-        jobListingsContainer.innerHTML = ''; // Clear previous listings
-        if (jobsToDisplay.length === 0 && activeFilters.size > 0) {
-            jobListingsContainer.innerHTML = '<p style="text-align: center; color: var(--dark-grayish-cyan);">No job listings match your current filters.</p>';
-        } else if (jobsToDisplay.length === 0 && activeFilters.size === 0) {
-             jobListingsContainer.innerHTML = '<p style="text-align: center; color: var(--dark-grayish-cyan);">No job listings available.</p>';
+    function displayListings(listingsToDisplay) {
+        jobItemsWrapper.innerHTML = ''; 
+        if (listingsToDisplay.length === 0 && activeFilters.size > 0) {
+            jobItemsWrapper.innerHTML = '<p style="text-align: center; color: var(--deep-teal);">No job listings match your current criteria.</p>';
+        } else if (listingsToDisplay.length === 0 && activeFilters.size === 0) {
+             jobItemsWrapper.innerHTML = '<p style="text-align: center; color: var(--deep-teal);">No job listings available.</p>';
         } else {
-            jobsToDisplay.forEach(job => {
-                const jobCard = createJobCard(job);
-                jobListingsContainer.appendChild(jobCard);
+            listingsToDisplay.forEach(job => {
+                const listingBlock = createListingBlock(job);
+                jobItemsWrapper.appendChild(listingBlock);
             });
         }
 
-        // Add event listeners to newly created filter tags on job cards
-        document.querySelectorAll('.job-card .filter-tag').forEach(tag => {
+        document.querySelectorAll('.listing-block .selection-tag').forEach(tag => {
             tag.addEventListener('click', (event) => {
                 const filter = event.target.dataset.filter;
                 addFilter(filter);
@@ -241,77 +231,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Function to add a filter to activeFilters and update UI ---
     function addFilter(filter) {
-        if (!activeFilters.has(filter)) { // Use has() for Set
-            activeFilters.add(filter); // Use add() for Set
-            updateFilterBarUI(); // Update filter bar
-            applyFilters();      // Apply filters to job listings
+        if (!activeFilters.has(filter)) { 
+            activeFilters.add(filter); 
+            updateCriteriaPanelUI(); 
+            applyFilters();      
         }
     }
 
-    // --- Function to remove a filter from activeFilters and update UI ---
     function removeFilter(filterToRemove) {
-        activeFilters.delete(filterToRemove); // Use delete() for Set
-        updateFilterBarUI(); // Update filter bar
-        applyFilters();      // Apply filters to job listings
+        activeFilters.delete(filterToRemove); 
+        updateCriteriaPanelUI(); 
+        applyFilters();      
     }
 
-    // --- Function to clear all filters ---
     function clearAllFilters() {
-        activeFilters.clear(); // Use clear() for Set
-        updateFilterBarUI(); // Update filter bar (should hide it if no filters)
-        applyFilters();      // Apply filters (should show all jobs)
+        activeFilters.clear(); 
+        updateCriteriaPanelUI(); 
+        applyFilters();      
     }
 
-    // --- Function to update the filter bar UI ---
-    function updateFilterBarUI() {
-        activeFiltersDisplay.innerHTML = ''; // Clear current filter tags
-        if (activeFilters.size > 0) { // Use size for Set
-            filterBarContainer.classList.add('show'); // Show the filter bar with animation
+    function updateCriteriaPanelUI() {
+        currentSelections.innerHTML = ''; 
+        if (activeFilters.size > 0) { 
+            criteriaSelectionPanel.classList.add('visible'); 
             activeFilters.forEach(filter => {
-                const filterTagItem = document.createElement('div');
-                filterTagItem.classList.add('filter-tag-item');
-                filterTagItem.innerHTML = `
+                const selectedCriteriaItem = document.createElement('div');
+                selectedCriteriaItem.classList.add('selected-criteria-item');
+                selectedCriteriaItem.innerHTML = `
                     <span>${filter}</span>
-                    <button class="remove-filter-btn" data-filter="${filter}">X</button>
+                    <button class="remove-selection-button" data-filter="${filter}">X</button>
                 `;
-                activeFiltersDisplay.appendChild(filterTagItem);
+                currentSelections.appendChild(selectedCriteriaItem);
             });
 
-            // Attach event listeners to the new 'X' buttons in the filter bar
-            document.querySelectorAll('.filter-tag-item .remove-filter-btn').forEach(btn => {
+            document.querySelectorAll('.selected-criteria-item .remove-selection-button').forEach(btn => {
                 btn.addEventListener('click', (event) => {
                     const filterToRemove = event.target.dataset.filter;
                     removeFilter(filterToRemove);
                 });
             });
         } else {
-            filterBarContainer.classList.remove('show'); // Hide the filter bar
+            criteriaSelectionPanel.classList.remove('visible'); 
         }
     }
 
-    // --- Function to apply filters to the job data ---
     function applyFilters() {
-        if (activeFilters.size === 0) { // Use size for Set
-            displayJobs(allJobs); // Show all jobs if no filters
+        if (activeFilters.size === 0) { 
+            displayListings(allJobs); 
             return;
         }
 
         const filteredJobs = allJobs.filter(job => {
-            // Combine all relevant tags for the job into a single array and convert to lowercase for case-insensitive matching
             const jobTags = [job.role, job.level, ...job.languages, ...job.tools].map(tag => tag ? tag.toLowerCase() : '');
 
-            // Check if ALL active filters are present in the job's tags
-            return Array.from(activeFilters).every(filter => jobTags.includes(filter.toLowerCase())); // Convert Set to Array for every()
+            return Array.from(activeFilters).every(filter => jobTags.includes(filter.toLowerCase())); 
         });
-        displayJobs(filteredJobs);
+        displayListings(filteredJobs);
     }
 
-    // Event listener for the "Clear" button
-    clearFiltersBtn.addEventListener('click', clearAllFilters);
-
-    // Initial setup when the DOM is ready (jobs are displayed via initial filters)
-    // The previous call to fetchData() is removed. Filters are added directly.
-    // applyFilters() is called last to display jobs with the initial filters.
+    resetCriteriaButton.addEventListener('click', clearAllFilters);
 });

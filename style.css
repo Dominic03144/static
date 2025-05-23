@@ -1,13 +1,14 @@
-/* Color Variables */
 :root {
-    --dark-cyan: hsl(180, 29%, 50%);
-    --very-dark-cyan: hsl(180, 14%, 20%);
-    --light-cyan-background: hsl(180, 52%, 96%);
-    --light-cyan-filter-tablets: hsl(180, 31%, 95%);
-    --dark-grayish-cyan: hsl(180, 8%, 52%);
+    /* Primary */
+    --desaturated-dark-cyan: hsl(180, 29%, 50%);
+
+    /* Neutral */
+    --light-grayish-cyan-bg: hsl(180, 52%, 96%); /* Background */
+    --light-grayish-cyan-filter: hsl(180, 31%, 95%); /* Filter tablets */
+    --deep-teal: hsl(180, 8%, 52%); /* New name for --dark-grayish-cyan */
+    --very-dark-grayish-cyan: hsl(180, 14%, 20%);
 }
 
-/* Universal Styles & Reset */
 * {
     margin: 0;
     padding: 0;
@@ -16,279 +17,281 @@
 
 body {
     font-family: 'League Spartan', sans-serif;
-    background-color: var(--light-cyan-background);
-    min-height: 80vh;
+    font-size: 15px;
+    background-color: var(--light-grayish-cyan-bg);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    
 }
 
-/* Header/Hero Section */
-.hero {
-    background-color: var(--dark-cyan);
+.main-header {
+    background-color: var(--desaturated-dark-cyan);
     background-image: url('./images/bg-header-desktop.svg');
     background-size: cover;
     background-position: center;
+    height: 156px;
     width: 100%;
-    height: 150px;
 }
 
-/* Content Wrapper to push filter bar up */
-.content-wrapper {
-    width: 80%; /* Adjust width for desktop view */
-    max-width: 1100px; /* Max width to keep content readable */
+.main-content-area {
+    padding: 0 100px;
+    margin-top: -70px; /* Adjust to pull content up over header */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 25px; /* Space between job cards */
-    padding-bottom: 50px; /* Padding at the bottom of the container */
-    position: relative; /* For filter bar positioning */
-    margin-top: -75px; /* Pull content up to overlap hero */
-}
-
-/* Filter Bar Styling */
-.filter-bar-container {
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 10px 20px rgba(0, 71, 71, 0.1);
-    padding: 20px 25px;
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap; /* Allow filters to wrap */
-    min-height: 70px; /* Ensure some height even with few filters */
-    margin-bottom: 25px; /* Space between filter bar and first job card */
-    visibility: hidden; /* Hidden by default, shown by JS when filters are active */
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.3s ease-out;
+    gap: 24px; /* Space between filter panel and job listings */
 }
 
-.filter-bar-container.show {
-    visibility: visible;
+.criteria-selection-panel { /* Updated class name */
+    background-color: white;
+    width: 100%;
+    max-width: 1110px; /* Max width for consistency with design */
+    padding: 20px 40px;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px; /* Gap between selections and clear button */
+    min-height: 72px; /* Minimum height for filter bar */
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+    visibility: hidden; /* Hide completely when not active */
+    transform: translateY(-20px); /* Initial state for animation */
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, visibility 0.3s;
+}
+
+.criteria-selection-panel.visible { /* Updated class name */
     opacity: 1;
+    visibility: visible;
     transform: translateY(0);
 }
 
-.active-filters {
+.current-selections { /* Updated class name */
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    flex-grow: 1; /* Allow filters to take space */
+    gap: 15px;
+    flex-grow: 1;
 }
 
-.filter-tag-item {
-    background-color: var(--light-cyan-filter-tablets);
-    color: var(--dark-cyan);
-    font-weight: 700;
-    border-radius: 5px;
+.selected-criteria-item { /* Updated class name */
     display: flex;
-    align-items: center;
-    overflow: hidden; /* Ensures rounded corners on children */
-    font-size: 0.9em;
+    border-radius: 5px;
+    overflow: hidden; /* Ensures the button corner is also rounded */
+    background-color: var(--light-grayish-cyan-filter);
 }
 
-.filter-tag-item span {
+.selected-criteria-item span { /* Updated class name */
     padding: 8px 10px;
+    color: var(--desaturated-dark-cyan);
+    font-weight: 700;
 }
 
-.filter-tag-item .remove-filter-btn {
-    background-color: var(--dark-cyan);
-    color: #fff;
+.remove-selection-button { /* Updated class name */
+    background-color: var(--desaturated-dark-cyan);
+    color: white;
     border: none;
     padding: 8px 10px;
     cursor: pointer;
     font-weight: 700;
     transition: background-color 0.2s ease;
-    display: flex; /* For centering the 'X' if needed */
-    align-items: center;
-    justify-content: center;
-    line-height: 1; /* To ensure 'X' is vertically centered */
 }
 
-.filter-tag-item .remove-filter-btn:hover {
-    background-color: var(--very-dark-cyan);
+.remove-selection-button:hover { /* Updated class name */
+    background-color: var(--very-dark-grayish-cyan);
 }
 
-.clear-filters-btn {
+.reset-criteria-button { /* Updated class name */
     background: none;
     border: none;
-    color: var(--dark-grayish-cyan);
+    color: var(--deep-teal); /* Using new variable */
     font-weight: 700;
     cursor: pointer;
-    font-size: 0.9em;
-    padding: 5px 10px; /* Make it clickable area larger */
+    font-size: 1em;
     transition: color 0.2s ease;
-    margin-left: 15px; /* Space from filter tags */
+    padding: 8px 0; /* Add padding for click area */
 }
 
-.clear-filters-btn:hover {
-    color: var(--dark-cyan);
+.reset-criteria-button:hover { /* Updated class name */
+    color: var(--desaturated-dark-cyan);
+    text-decoration: underline;
 }
 
-/* Individual Job Card Styling */
-.job-card {
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 10px 20px rgba(0, 71, 71, 0.1);
-    display: flex;
-    align-items: center;
-    padding: 25px;
-    position: relative;
-    overflow: hidden;
-}
-
-.job-card.featured {
-    border-left: 5px solid var(--dark-cyan);
-}
-
-.job-card img {
-    width: 88px;
-    height: 88px;
-    margin-right: 25px;
-    border-radius: 50%; /* Only if logos are circles */
-}
-
-.job-info {
+.job-items-wrapper { /* Updated class name */
+    width: 100%;
+    max-width: 1110px; /* Max width for consistency */
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    gap: 24px; /* Space between job cards */
+    padding-bottom: 50px; /* Space at the bottom */
 }
 
-.company-new-featured {
+.listing-block { /* Updated class name */
+    background-color: white;
+    border-radius: 5px;
+    padding: 30px 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    gap: 24px;
+    position: relative; /* For the featured border */
 }
 
-.company-new-featured .company-name {
-    color: var(--dark-cyan);
+.listing-block.highlighted { /* Updated class name */
+    border-left: 5px solid var(--desaturated-dark-cyan);
+}
+
+.listing-block img { /* Image styling within the block */
+    width: 88px; /* Standard size for company logo */
+    height: 88px;
+    border-radius: 50%; /* If logos are circular */
+    object-fit: cover;
+}
+
+.listing-details { /* Updated class name */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.org-status-section { /* Updated class name */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.org-title { /* Updated class name */
+    color: var(--desaturated-dark-cyan);
     font-weight: 700;
-    margin-right: 15px;
+    margin-right: 8px;
 }
 
-.new-badge, .featured-badge {
-    background-color: var(--dark-cyan);
-    color: #fff;
+.fresh-indicator, .premium-tag { /* Updated class names */
+    background-color: var(--desaturated-dark-cyan);
+    color: white;
     padding: 5px 8px;
     border-radius: 15px;
     font-size: 0.8em;
     font-weight: 700;
-    margin-right: 10px;
     text-transform: uppercase;
 }
 
-.featured-badge {
-    background-color: var(--very-dark-cyan);
+.premium-tag { /* Specific style for featured badge */
+    background-color: var(--very-dark-grayish-cyan);
 }
 
-.position {
-    color: var(--very-dark-cyan);
+.role-designation { /* Updated class name */
+    font-size: 1.2em;
     font-weight: 700;
-    font-size: 1.25em;
-    margin-bottom: 8px;
+    color: var(--very-dark-grayish-cyan);
+    cursor: pointer;
     transition: color 0.2s ease;
 }
 
-.position:hover {
-    color: var(--dark-cyan);
-    cursor: pointer;
+.role-designation:hover { /* Updated class name */
+    color: var(--desaturated-dark-cyan);
 }
 
-.details {
+.timing-location-info { /* Updated class name */
+    color: var(--deep-teal); /* Using new variable */
+    font-weight: 500;
     display: flex;
-    color: var(--dark-grayish-cyan);
-    font-size: 0.9em;
+    align-items: center;
+    gap: 8px;
 }
 
-.details span:not(:last-child)::after {
+.timing-location-info span:not(:last-child)::after { /* Updated class name */
     content: "•";
-    margin: 0 8px;
+    margin-left: 8px;
 }
 
-/* Filters/Tags Section on Job Card */
-.filters-container {
+.skill-tags-group { /* Updated class name */
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-left: auto;
-    justify-content: flex-end;
+    gap: 15px;
+    /* Optional: Add a subtle separator if needed */
+    padding-left: 24px; /* Space from job info */
+    border-left: 1px solid var(--light-grayish-cyan-filter); /* separator line */
 }
 
-.filter-tag {
-    background-color: var(--light-cyan-filter-tablets);
-    color: var(--dark-cyan);
-    font-weight: 700;
+.selection-tag { /* Updated class name */
+    background-color: var(--light-grayish-cyan-filter);
+    color: var(--desaturated-dark-cyan);
     padding: 8px 10px;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: 700;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.filter-tag:hover {
-    background-color: var(--dark-cyan);
-    color: #fff;
+.selection-tag:hover { /* Updated class name */
+    background-color: var(--desaturated-dark-cyan);
+    color: white;
 }
 
-/* Responsive adjustments for smaller screens */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .hero {
-        background-image: url('./images/bg-header-mobile.svg'); /* Mobile header image */
+    .main-header {
+        background-image: url('./images/bg-header-mobile.svg');
+        height: 120px;
     }
 
-    .content-wrapper {
-        width: 90%; /* More width on mobile */
-        padding-bottom: 30px;
-        margin-top: -40px; /* Adjust overlap for mobile header height */
+    .main-content-area {
+        padding: 0 24px;
+        margin-top: -50px;
     }
 
-    .filter-bar-container {
-        flex-direction: row; /* Keep elements in a row for mobile filter bar */
-        align-items: flex-start; /* Align filters to the top if they wrap */
-        padding: 20px;
-        margin-bottom: 20px;
+    .criteria-selection-panel {
+        padding: 15px 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
     }
 
-    .active-filters {
-        flex-basis: 100%; /* Filters take full width before clear button */
-        margin-bottom: 10px; /* Space between filter tags and clear button */
+    .current-selections {
+        width: 100%;
+        justify-content: flex-start;
     }
 
-    .clear-filters-btn {
-        margin-left: auto; /* Push clear to right */
-        align-self: flex-start; /* Align to top right */
+    .reset-criteria-button {
+        width: 100%;
+        text-align: right;
+        padding-top: 10px;
+        border-top: 1px solid var(--light-grayish-cyan-filter);
     }
 
-    .job-card {
+    .job-items-wrapper {
+        gap: 40px; /* More space between stacked mobile cards */
+    }
+
+    .listing-block {
         flex-direction: column;
         align-items: flex-start;
-        padding-top: 50px; /* Space for pushed-up logo */
+        padding: 24px;
+        padding-top: 60px; /* Space for logo pulled up */
         position: relative;
     }
 
-    .job-card img {
+    .listing-block img {
         position: absolute;
-        top: -30px; /* Pushes logo up outside the card */
-        left: 25px;
-        width: 60px; /* Smaller logo on mobile */
-        height: 60px;
-        margin-right: 0; /* Remove margin */
+        top: -44px; /* Pull logo up */
+        left: 24px;
+        width: 48px;
+        height: 48px;
     }
 
-    .company-new-featured {
-        margin-top: 10px; /* Space after logo for mobile */
+    .org-status-section {
+        margin-top: 15px;
     }
 
-    .job-info {
+    .skill-tags-group {
         width: 100%;
-        padding-bottom: 20px; /* Space before horizontal rule */
-        border-bottom: 1px solid hsla(180, 8%, 52%, 0.3); /* Subtle separator */
-        margin-bottom: 20px;
-    }
-
-    .filters-container {
-        margin-left: 0; /* No auto margin */
-        justify-content: flex-start; /* Align tags to the left */
-        width: 100%; /* Take full width */
+        padding-left: 0;
+        border-left: none;
+        border-top: 1px solid var(--light-grayish-cyan-filter);
+        padding-top: 20px;
+        margin-top: 20px;
     }
 }
